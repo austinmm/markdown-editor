@@ -31,8 +31,31 @@ var render_tasklist = function(str){
     return str
 }
 ```
-### Examples
+### 1.) Checked Task-List Item
+- Input:
+```
+- [x] foo
+```
+- Output:
+```
+<ul>
+<li><input checked disabled type="checkbox"> foo</li>
+</ul>
+```
 
+### 2.) Unchecked Task-List Item
+- Input:
+```
+- [ ] foo
+```
+- Output:
+```
+<ul>
+<li><input disabled type="checkbox"> foo</li>
+</ul>
+```
+
+### 3.) Checked and Unchecked Task-List Items
 - Input:
 ```
 - [ ] foo
@@ -41,25 +64,28 @@ var render_tasklist = function(str){
 - Output:
 ```
 <ul>
-<li><input disabled="true" type="checkbox"> foo</li>
-<li><input checked="" disabled="" type="checkbox"> bar</li>
+<li><input disabled type="checkbox"> foo</li>
+<li><input checked disabled type="checkbox"> bar</li>
 </ul>
 ```
 
-Task lists can be arbitrarily nested:
-
-Example 280
+### 4.) Nested Task-List Items
+- Input:
+```
 - [x] foo
   - [ ] bar
   - [x] baz
 - [ ] bim
- 
+```
+- Output:
+```
 <ul>
-<li><input checked="" disabled="" type="checkbox"> foo
+<li><input checked disabled type="checkbox"> foo
 <ul>
-<li><input disabled="" type="checkbox"> bar</li>
-<li><input checked="" disabled="" type="checkbox"> baz</li>
+<li><input disabled type="checkbox"> bar</li>
+<li><input checked disabled type="checkbox"> baz</li>
 </ul>
 </li>
-<li><input disabled="" type="checkbox"> bim</li>
+<li><input disabled type="checkbox"> bim</li>
 </ul>
+```
