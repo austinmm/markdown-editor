@@ -3,7 +3,7 @@
 Hard Line breaks can be implamented in a variety of ways in the GFM format.  
 Below is a complete list of all ways in which one can go about implamenting a hard line break.
 
-#### - Here is the code implemented by @austinmm that enabled this ability:
+- **Here is the code implemented by @austinmm that enabled this ability:**
 ```
 var render_hardlinebreak = function(str){
     if(str.match(/\n\\\n/)){
