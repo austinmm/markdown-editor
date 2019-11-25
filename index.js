@@ -1,16 +1,14 @@
 var URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
-navigator.saveBlob = navigator.saveBlob || navigator.msSaveBlob
-                    || navigator.mozSaveBlob || navigator.webkitSaveBlob;
-window.saveAs = window.saveAs || window.webkitSaveAs
-                || window.mozSaveAs || window.msSaveAs;
+navigator.saveBlob = navigator.saveBlob || navigator.msSaveBlob ||
+                navigator.mozSaveBlob || navigator.webkitSaveBlob;
+window.saveAs = window.saveAs || window.webkitSaveAs ||
+            window.mozSaveAs || window.msSaveAs;
 
 // Because highlight.js is a bit awkward at times
 var languageOverrides = {
     js: "javascript",
     html: "xml"
 };
-
-var livestyles;
 
 emojify.setConfig({
     img_dir: "emoji"
@@ -34,6 +32,30 @@ var md = markdownit({
     })
     .use(markdownitFootnote);
 
+/*
+This function is used to check for task list notation.
+If regex matches the string to task-list markdown format,
+then the task-list is rendered to its correct form.
+User: @austinmm
+*/
+var renderTasklist = function(str){
+    // Checked task-list box match
+    if(str.match(/<li>\[x\]\s+\w+/gi)){
+        str = str.replace(/(<li)(>\[x\]\s+)(\w+)/gi,
+            `$1 style="list-style-type: none;"><input type="checkbox"
+            checked style="list-style-type: none;
+            margin: 0 0.2em 0 -1.3em;" disabled> $3`);
+    }
+    // Unchecked task-list box match
+    if (str.match(/<li>\[ \]\s+\w+/gi)){
+        str = str.replace(/(<li)(>\[ \]\s+)(\w+)/gi,
+            `$1 style="list-style-type: none;"><input type="checkbox"
+            style="list-style-type: none;
+            margin: 0 0.2em 0 -1.3em;" disabled> $3`);
+    }
+    return str;
+};
+
 function setOutput(val) {
     val = val.replace(/<equation>((.*?\n)*?.*?)<\/equation>/ig, function(a, b) {
         return "<img src='http://latex.codecogs.com/png.latex?'"
@@ -46,7 +68,7 @@ function setOutput(val) {
     emojify.run(out);
     console.log(out.innerHTML);
     // Checks if there are any task-list present in out.innerHTML
-    out.innerHTML = render_tasklist(out.innerHTML);
+    out.innerHTML = renderTasklist(out.innerHTML);
 
     var allold = old.getElementsByTagName("*");
     if (allold === undefined){
@@ -87,30 +109,6 @@ function update(e) {
         oldTitle = title;
         document.title = title;
     }
-}
-
-/*
-This function is used to check for task list notation.
-If regex matches the string to task-list markdown format,
-then the task-list is rendered to its correct form.
-User: @austinmm
-*/
-var render_tasklist = function(str){
-    // Checked task-list box match
-    if(str.match(/<li>\[x\]\s+\w+/gi)){
-        str = str.replace(/(<li)(>\[x\]\s+)(\w+)/gi,
-            `$1 style="list-style-type: none;"><input type="checkbox"
-            checked style="list-style-type: none;
-            margin: 0 0.2em 0 -1.3em;" disabled> $3`);
-    }
-    // Unchecked task-list box match
-    if (str.match(/<li>\[ \]\s+\w+/gi)){
-        str = str.replace(/(<li)(>\[ \]\s+)(\w+)/gi,
-            `$1 style="list-style-type: none;"><input type="checkbox"
-            style="list-style-type: none;
-            margin: 0 0.2em 0 -1.3em;" disabled> $3`);
-    }
-    return str;
 }
 
 CodeMirrorSpellChecker({
@@ -210,11 +208,6 @@ function saveAsHtml() {
     save(document.getElementById("out").innerHTML, document.title.replace(/[`~!@#$%^&*()_|+\-=?;:"",.<>\{\}\[\]\\\/\s]/gi, "") + ".html");
 }
 
-function hideMenu() {
-    menuVisible = false;
-    menu.style.display = "none";
-}
-
 document.getElementById("saveas-markdown").addEventListener("click", function() {
     saveAsMarkdown();
     hideMenu();
@@ -225,9 +218,13 @@ document.getElementById("saveas-html").addEventListener("click", function() {
     hideMenu();
 });
 
-var menuVisible = false;
 var menu = document.getElementById("menu");
+var menuVisible = false;
 
+function hideMenu() {
+    menuVisible = false;
+    menu.style.display = "none";
+}
 function showMenu() {
     menuVisible = true;
     menu.style.display = "block";
