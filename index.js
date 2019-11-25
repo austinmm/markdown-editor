@@ -16,7 +16,7 @@ emojify.setConfig({
 
 var md = markdownit({
         html: true,
-        highlight: function(code, lang) {
+        highlight(code, lang) {
             if (languageOverrides[lang]){
                 lang = languageOverrides[lang];
             }
@@ -24,7 +24,7 @@ var md = markdownit({
                 try {
                     return hljs.highlight(lang, code).value;
                 } catch (e) {
-                    console.log(e);
+                    Console.log(e);
                 }
             }
             return "";
@@ -66,17 +66,17 @@ function setOutput(val) {
     var old = out.cloneNode(true);
     out.innerHTML = md.render(val);
     emojify.run(out);
-    console.log(out.innerHTML);
+    Console.log(out.innerHTML);
     // Checks if there are any task-list present in out.innerHTML
     out.innerHTML = renderTasklist(out.innerHTML);
 
     var allold = old.getElementsByTagName("*");
-    if (allold === undefined){
+    if (typeof allold === 'undefined'){
         return;
     }
 
     var allnew = out.getElementsByTagName("*");
-    if (allnew === undefined){
+    if (typeof allnew === 'undefined'){
         return;
     }
     var max = Math.min(allold.length, allnew.length);
@@ -146,19 +146,19 @@ function selectionChanger(selection,operator,endoperator){
 
 editor.addKeyMap({
     // bold
-    "Ctrl-B": function(cm) {
+    "Ctrl-B"(cm) {
         cm.replaceSelection(selectionChanger(cm.getSelection(),"**"));
     },
     // italic
-    "Ctrl-I": function(cm) {
+    "Ctrl-I"(cm) {
         cm.replaceSelection(selectionChanger(cm.getSelection(),"_"));
     },
     // code
-    "Ctrl-K": function(cm) {
+    "Ctrl-K"(cm) {
         cm.replaceSelection(selectionChanger(cm.getSelection(),"`"));
     },
     // keyboard shortcut
-    "Ctrl-L": function(cm) {
+    "Ctrl-L"(cm) {
         cm.replaceSelection(selectionChanger(
             cm.getSelection(),"<kbd>","</kbd>")
         );
@@ -208,16 +208,6 @@ function saveAsHtml() {
     save(document.getElementById("out").innerHTML, document.title.replace(/[`~!@#$%^&*()_|+\-=?;:"",.<>\{\}\[\]\\\/\s]/gi, "") + ".html");
 }
 
-document.getElementById("saveas-markdown").addEventListener("click", function() {
-    saveAsMarkdown();
-    hideMenu();
-});
-
-document.getElementById("saveas-html").addEventListener("click", function() {
-    saveAsHtml();
-    hideMenu();
-});
-
 var menu = document.getElementById("menu");
 var menuVisible = false;
 
@@ -230,13 +220,23 @@ function showMenu() {
     menu.style.display = "block";
 }
 
+document.getElementById("saveas-markdown").addEventListener("click", function() {
+    saveAsMarkdown();
+    hideMenu();
+});
+
+document.getElementById("saveas-html").addEventListener("click", function() {
+    saveAsHtml();
+    hideMenu();
+});
+
 function openFile(evt) {
     if (window.File && window.FileReader && window.FileList && window.Blob) {
         var files = evt.target.files;
-        console.log(files);
+        Console.log(files);
         var reader = new FileReader();
         reader.onload = function(file) {
-            console.log(file.target.result);
+            Console.log(file.target.result);
             editor.setValue(file.target.result);
             return true;
         };
@@ -271,7 +271,7 @@ function saveInBrowser() {
         localStorage.setItem("content", text);
         swal("Saved", "Your Document has been saved.", "success");
     }
-    console.log("Saved");
+    Console.log("Saved");
 }
 
 document.addEventListener("keydown", function(e) {
